@@ -6,6 +6,25 @@
     <link rel="shortcut icon" href="favicon.ico">
     <title>Add Comment | Hacker News</title>
     <script th:src="@{/css/timeUpdater.js}" type="text/javascript"></script>
+    <style>
+        body { font-family:Verdana; font-size:20pt; }
+        td { font-family:Verdana; font-size:20pt; line-height:138%; }
+        blockquote {line-height:122%; }
+        p { margin-bottom:15px; }
+
+        .foot { font-size:7.5pt; }
+        .foot a:link, .foot a:visited { text-decoration:none; }
+        .foot a:hover { text-decoration:underline; }
+
+        .apply a:link { font-size:20pt; }
+        .apply a:visited { font-size:20pt; }
+
+        .title { font-size:17pt; }
+        .title b { }
+
+        .big { margin-top:3ex; }
+        .small { margin-top:-1.6ex; }
+    </style>
 </head>
 <body>
 <center>
@@ -46,13 +65,13 @@
                         <td class="default">
                             <div style="margin-top:2px; margin-bottom:-10px;">
                                             <span class="comhead">
-                                                <a href="" class="hnuser" th:if="${comment.author != null}" th:text="${comment.author.username}"></a>
+                                                <a style="color:black;" href="" class="hnuser" th:if="${comment.author != null}" th:text="${comment.author.username}"></a>
                                                 <span class="age" >
                                                     <span class="submission-time" th:text="${comment.formattedTime}" th:attr="data-timestamp=${comment.getSubmissionTime().getTime()}"></span>
                                                 </span>
                                                 <span id="unv_37442080"></span>
                                                 <span class="navs">
-                                                    | <a th:href="@{/comments/list(storyId=${storyId})}">parent</a>
+                                                    | <a style="color:black;" th:href="@{/comments/list(storyId=${storyId})}">parent</a>
                                                     <span class="onstory">
                                                         | on: <a th:href="@{/comments/list(storyId=${storyId})}"  th:text="${story.title}"></a>
                                                     </span>
@@ -76,11 +95,11 @@
                                 <textarea name="text" rows="8" cols="80" wrap="virtual" autofocus="true"></textarea>
                                 <br><br>
                                 If you haven't already, would you mind reading about HN's
-                                <a th:href="@{/posts/faq}">
+                                <a style="color:black;" th:href="@{/posts/faq}">
                                     <u>approach to comments</u>
                                 </a>
                                 and
-                                <a th:href="@{/posts/guide}">
+                                <a style="color:black;" th:href="@{/posts/guide}">
                                     <u>site guidelines</u>
                                 </a>?
                                 <br><br>

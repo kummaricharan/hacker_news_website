@@ -27,8 +27,6 @@
              content: "| ";
              margin-left: 5px; /* Adjust the margin as needed for spacing */
          }
-
-
     </script>
     <style>
         <style>
@@ -45,6 +43,23 @@
         .btn-style {
             margin-right: 10px;
         }
+        body { font-family:Verdana; font-size:20pt; }
+        td { font-family:Verdana; font-size:20pt; line-height:138%; }
+        blockquote {line-height:122%; }
+        p { margin-bottom:15px; }
+
+        .foot { font-size:7.5pt; }
+        .foot a:link, .foot a:visited { text-decoration:none; }
+        .foot a:hover { text-decoration:underline; }
+
+        .apply a:link { font-size:20pt; }
+        .apply a:visited { font-size:20pt; }
+
+        .title { font-size:17pt; }
+        .title b { }
+
+        .big { margin-top:3ex; }
+        .small { margin-top:-1.6ex; }
     </style>
 </head>
 <body>
@@ -56,16 +71,16 @@
                     <tr>
                         <td style="width:18px;padding-right:4px">
                             <a th:href="@{/posts/list}">
-                                <span class="hn-symbol">Y</span>
+                                <span  style="color:white;" class="hn-symbol">Y</span>
                             </a>
                         </td>
                         <td style="line-height: 12pt; height: 10px;">
                                 <span class="pagetop">
                                     <div class="horizontal-menu">
                                         <b class="btn-style">
-                                            <a th:href="@{/posts/list}">Hacker News</a>
+                                            <a style="color:black" th:href="@{/posts/list}">Hacker News</a>
                                         </b>
-                                        <a href="/posts/welcome"  class="btn-style" th:if="${#authorization.expression('isAuthenticated()')}">Welcome |</a>
+                                        <a style="color:black" href="/posts/welcome"  class="btn-style" th:if="${#authorization.expression('isAuthenticated()')}">Welcome |</a>
                                         <form th:action="@{/posts/list}" method="get">
                                             <input type="hidden" name="new" value="new">
                                             <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">new</button>
@@ -94,7 +109,7 @@
                                             <input type="hidden" name="jobs" value="jobs">
                                             <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">jobs</button>
                                         </form>
-                                        <a th:href="@{/posts/createstory}" th:if="${#authorization.expression('isAuthenticated()')}" th:text="submit" class="btn-style"></a>
+                                        <a style="color:black;" th:href="@{/posts/createstory}" th:if="${#authorization.expression('isAuthenticated()')}" th:text="submit" class="btn-style"></a>
                                     </div>
                                 </span>
                         </td>
@@ -134,9 +149,9 @@
             <button style="border:0;" type="submit">Upvote</button>
         </form>|
         <span class="submission-time" th:text="${story.formattedTime}" th:attr="data-timestamp=${story.getSubmissionTime().getTime()}"></span>
-        <span>| <a th:href="@{/posts/search(search=${story.title})}" th:value="${story.title}" th:text="past"></a>
+        <span>| <a th:href="@{/posts/search(search=${story.title})}" th:value="${story.title}" th:text="past" style="color:black"></a>
             <input type="hidden" name="search" placeholder="Search by title, url, author..." th:value="${story.title}" >|
-        <a th:href=" @{/comments/favorite(storyId=${story.id})}" th:text="favorite" th:if="${!user.favoriteStories.contains(story)}"></a>
+        <a  style="color:black;" th:href=" @{/comments/favorite(storyId=${story.id})}" th:text="favorite" th:if="${!user.favoriteStories.contains(story)}"></a>
         <a th:href=" @{/comments/unfavorite(storyId=${story.id})}" th:text="unfavorite" th:if="${user.favoriteStories.contains(story)}"></a></span>
         |<a th:href="@{/comments/list(storyId=${story.id})}">
             <span th:text="${story.comments.size()} + ' comments'"></span>
@@ -154,11 +169,11 @@
     <textarea name="text" rows="4" cols="60" th:field="*{text}" wrap="virtual"></textarea>
     <br><br>
     If you haven't already, would you mind reading about HN's
-    <a href="newswelcome.html">
+    <a style="color:black" th:href="@{/posts/faq}">
         <u>approach to comments</u>
     </a>
     and
-    <a href="newsguidelines.html#comments">
+    <a  style="color:black" th:href="@{/posts/guide}">
         <u>site guidelines</u>
     </a>?
     <br><br>

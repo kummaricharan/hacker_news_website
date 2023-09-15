@@ -21,6 +21,22 @@
         .btn-style {
             margin-right: 10px;
         }
+        body { font-family:Verdana; font-size:20pt; }
+        td { font-family:Verdana; font-size:20pt; line-height:138%; }
+        blockquote {line-height:122%; }
+        p { margin-bottom:15px; }
+        .foot { font-size:7.5pt; }
+        .foot a:link, .foot a:visited { text-decoration:none; }
+        .foot a:hover { text-decoration:underline; }
+
+        .apply a:link { font-size:20pt; }
+        .apply a:visited { font-size:20pt; }
+
+        .title { font-size:17pt; }
+        .title b { }
+
+        .big { margin-top:3ex; }
+        .small { margin-top:-1.6ex; }
     </style>
 </head>
 <body>
@@ -39,16 +55,16 @@
                                 <span class="pagetop">
                                     <div class="horizontal-menu">
                                         <b class="btn-style">
-                                            <a th:href="@{/posts/list}">Hacker News</a>
+                                            <a style="color:black;" th:href="@{/posts/list}">Hacker News</a>
                                         </b>
-                                        <a href="/posts/welcome"  class="btn-style" th:if="${#authorization.expression('isAuthenticated()')}">Welcome |</a>
-                                        <form th:action="@{/posts/list}" method="get">
+                                        <a style="color:black;" href="/posts/welcome"  class="btn-style" th:if="${#authorization.expression('isAuthenticated()')}">Welcome |</a>
+                                        <form th:action="@{/posts/list}" method="get" style="display: inline;">
                                             <input type="hidden" name="new" value="new">
                                             <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">new</button>
                                         </form>
                                         |
                                         <form th:action="@{/posts/list}" method="get">
-                                            <input type="hidden" name="past" value="past">
+                                            <input type="hidden" name="past" value="past" style="display: inline;">
                                             <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">past</button>
                                         </form>
                                         |
@@ -69,9 +85,9 @@
                                         |
                                         <form th:action="@{/posts/list}" method="get">
                                             <input type="hidden" name="job" value="job">
-                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">jobs</button>
+                                            <button  style="background-color:#ff6600;border:0;" type="submit" class="btn-style">jobs</button>
                                         </form>
-                                        <a th:href="@{/posts/createstory}" th:if="${#authorization.expression('isAuthenticated()')}" th:text="submit" class="btn-style"></a>
+                                        <a style="color:black;" th:href="@{/posts/createstory}" th:if="${#authorization.expression('isAuthenticated()')}" th:text="submit" class="btn-style"></a>
                                     </div>
                                 </span>
                         </td>
