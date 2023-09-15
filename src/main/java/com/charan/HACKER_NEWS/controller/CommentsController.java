@@ -230,6 +230,7 @@ public String saveComment(@RequestParam("postId") Long storyId,
                 }
             }
         }
+
         model.addAttribute("storyId",storyId);
         return "redirect:/comments/list?storyId=" + storyId;
     }

@@ -14,7 +14,7 @@ public interface StoryService {
     List<Story> findAll();
     Story findById(Long id);
     void save(Story story);
-    void deleteById(int id);
+    void deleteById(Long id);
     Page<Story> findAll(Pageable pageable);
     Page<Story> findAllStories(Pageable pageable);
 
@@ -33,5 +33,7 @@ public interface StoryService {
     Page<Story> findUpvotedStories(String username,Pageable pageable);
     Page<Story> findStoriesByFavorite(String username,Pageable pageable);
     Page<Story> findByPost(Pageable pageable);
+    void removeCommentReferencesByStoryIdDownvote(@Param("story") Story story);
+    void removeCommentReferencesByStoryIdUpvote(@Param("story") Story story);
 
 }

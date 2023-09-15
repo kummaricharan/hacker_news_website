@@ -22,7 +22,7 @@ public class User {
     private String profilePictureUrl;
     @OneToMany(mappedBy = "author",cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private List<Story> submittedStories;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name="user_upvoted_stories",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "story_id"))
@@ -32,21 +32,21 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "story_id"))
     private List<Story> favoriteStories;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_downvoted_stories",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "story_id")
     )
     private List<Story> downvotedStories;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_upvoted_comments",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id")
     )
     private List<Comment> upvotedComments;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_downvoted_comments",
             joinColumns = @JoinColumn(name = "user_id"),

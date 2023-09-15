@@ -4,6 +4,7 @@ import com.charan.HACKER_NEWS.entity.Story;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -64,6 +65,16 @@ public interface StoryRepository extends JpaRepository<Story,Integer> {
     Page<Story> findUpvotedStories(@Param("username") String username,Pageable pageable);
     @Query("SELECT us.favoriteStories FROM User us WHERE us.username = :username")
     Page<Story> findStoriesByFavorite(@Param("username") String username,Pageable pageable);
+
+    void deleteById(Long id);
+    @Modifying
+    @Query(value = "DELETE FROM user_downvoted_comments WHERE comment_id IN (SELECT c.id FROM Comment c WHERE c.parentStory = :story)", nativeQuery = true)
+    void removeCommentReferencesByStoryIdDownvote(@Param("story") Story story);
+
+    @Modifying
+    @Query(value = "DELETE FROM user_upvoted_comments WHERE comment_id IN (SELECT c.id FROM Comment c WHERE c.parentStory = :story)", nativeQuery = true)
+    void removeCommentReferencesByStoryIdUpvote(@Param("story") Story story);
+
 
 }
 

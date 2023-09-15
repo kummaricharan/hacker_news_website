@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="rss">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/css/timeUpdater.js}" type="text/javascript"></script>
 
     <title>Hacker News</title>
@@ -22,22 +24,6 @@
         .btn-style {
             margin-right: 10px;
         }
-        .user-info {
-    text-align: center;
-}
-
-.user-profile {
-    border-radius: 50%;
-    overflow: hidden;
-    width: 100px; /* Adjust the width and height as needed */
-    height: 100px;
-}
-
-.user-username {
-    margin-top: 10px;
-    font-weight: bold;
-}
-
     </style>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -122,12 +108,7 @@
                                     <a th:href="@{/posts/profile}"
                                        th:text="${#authentication.name}" th:if="${#authorization.expression('isAuthenticated()')}"><span th:text="${#authentication.name}"></span></a>
 
-<!--                                    <div th:if="${#authorization.expression('isAuthenticated()')}">-->
-<!--                                        <div th:if="${user.media != null}">-->
-<!--                                            <div th:if="${user.media.contentType.startsWith('image/')}">-->
-<!--                                                <img height="250px" width="100%" th:src="@{${'/display?id=' + user.media.mediaId}}" alt="Image">-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                    <div th:if="${#authorization.expression('isAuthenticated()')}">
                                         <form th:action="@{/logout}" method="post">
                                             <input type="submit" value="logout">
                                         </form>
@@ -136,6 +117,12 @@
                                         <a th:href="@{/user/LoginPage}" >Login</a><br>
                                         <a th:href="@{/user/register}" >Register</a>
                                     </div>
+                                    <!--                                    <div th:if="${#authorization.expression('isAuthenticated()')}">-->
+                                    <!--                                        <div th:if="${user.media != null}">-->
+                                    <!--                                            <div th:if="${user.media.contentType.startsWith('image/')}">-->
+                                    <!--                                                <img height="250px" width="100%" th:src="@{${'/display?id=' + user.media.mediaId}}" alt="Image">-->
+                                    <!--                                            </div>-->
+                                    <!--                                        </div>-->
                                 </span>
                         </td>
                     </tr>
@@ -186,9 +173,16 @@
                                             </form>
                                           <a th:href="@{/posts/search(search=${story.title})}" th:value="${story.title}" th:text="past"></a>
                                           <input type="hidden" name="search" placeholder="Search by title, url, author..." th:value="${story.title}" >|
-                                            <a th:href="@{/comments/list(storyId=${story.id})}">
-                                                <span  th:text="${story.comments.size()} + ' comments'"></span>
-                                            </a>
+                                          <a th:href="@{/comments/list(storyId=${story.id})}">
+                                              <span  th:text="${story.comments.size()} + ' comments'"></span>
+                                          </a>
+<!--                                          <form th:action="@{/posts/delete}" method="post" class="delete-form" style="display: inline;">-->
+<!--                                             <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                             <button style="border:0;" th:text="' | ' + delete" th:if="${#strings.equals(story.author.username, #authentication.name) or-->
+<!--        #authorization.expression('hasRole(''ADMIN'')')}"></button>-->
+<!--                                         </form>-->
+                                        <a th:if="${#strings.equals(story.author.username, #authentication.name) or #authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/posts/delete(storyId=${story.id})}" class="btn btn-sm"
+                                           onclick="return confirm('Are you sure you want to delete?');"> | Delete</a>
                                         </div>
                                     </li>
                                 </ul>

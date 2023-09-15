@@ -1,11 +1,13 @@
 package com.charan.HACKER_NEWS.services;
 
+import com.charan.HACKER_NEWS.entity.Comment;
 import com.charan.HACKER_NEWS.entity.Story;
 import com.charan.HACKER_NEWS.repository.StoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -43,8 +45,9 @@ public class StoryServiceImpl implements StoryService{
         storyRepository.save(story);
     }
 
+    @Transactional
     @Override
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         storyRepository.deleteById(id);
     }
 
@@ -105,6 +108,17 @@ public class StoryServiceImpl implements StoryService{
     public Page<Story> findByPost(Pageable pageable) {
         return storyRepository.findByPost(pageable);
     }
+    @Transactional
+    @Override
+    public void removeCommentReferencesByStoryIdDownvote(Story story) {
+        storyRepository.removeCommentReferencesByStoryIdDownvote(story);
+    }
+    @Transactional
+    @Override
+    public void removeCommentReferencesByStoryIdUpvote(Story story) {
+         storyRepository.removeCommentReferencesByStoryIdUpvote(story);
+    }
+
 
 }
 

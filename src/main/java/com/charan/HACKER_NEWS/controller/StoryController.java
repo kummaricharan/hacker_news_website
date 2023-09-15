@@ -1,7 +1,9 @@
 package com.charan.HACKER_NEWS.controller;
 
+import com.charan.HACKER_NEWS.entity.Comment;
 import com.charan.HACKER_NEWS.entity.Story;
 import com.charan.HACKER_NEWS.entity.User;
+import com.charan.HACKER_NEWS.services.CommentService;
 import com.charan.HACKER_NEWS.services.StoryService;
 import com.charan.HACKER_NEWS.services.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
@@ -32,10 +35,13 @@ import java.util.*;
 public class StoryController {
     private StoryService storyService;
     private UserService userService;
+    private CommentService commentService;
     private
-    @Autowired StoryController(StoryService storyService, UserService userService) {
+    @Autowired
+    StoryController(StoryService storyService, UserService userService,CommentService commentService) {
         this.storyService = storyService;
         this.userService = userService;
+        this.commentService = commentService;
     }
 
     @RequestMapping("/list")
@@ -130,7 +136,6 @@ public class StoryController {
 
         model.addAttribute("past",past);
         model.addAttribute("paginationUrl", paginationUrl.toString());
-
         return "posts/stories_home_page";
     }
     @PostMapping("/{id}/upvote")
@@ -223,7 +228,6 @@ public class StoryController {
             story.setAuthor(user);
             storyService.save(story);
 
-            System.out.println("Author: " + story.getAuthor().getUsername());
         } else {
             return "redirect:/user/LoginPage";
         }
@@ -429,5 +433,31 @@ public class StoryController {
     @RequestMapping("/security")
     public String security(){
         return "posts/security";
+    }
+    @GetMapping("/delete")
+    public String delete(@RequestParam("storyId") Long storyId){
+        Story story = storyService.findById(storyId);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        storyService.removeCommentReferencesByStoryIdDownvote(story);
+//        storyService.removeCommentReferencesByStoryIdUpvote(story);
+        User user = null;
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            user = userService.findByName(userDetails.getUsername());
+        }
+        if(user.hasUpvoted(story)){
+            user.getUpvotedStories().remove(story);
+        }
+        if(user.hasDownvoted(story)){
+            user.getDownvotedStories().remove(story);
+        }
+        List<Comment> comments= commentService.findAllByParentStory(story);
+        for(Comment comment : comments){
+            commentService.deleteByCommentIdDownVote(comment.getId());
+            commentService.deleteByCommentIdUpVote(comment.getId());
+            commentService.deleteById(comment.getId());
+        }
+        storyService.deleteById(storyId);
+        return "redirect:/posts/list";
     }
 }
