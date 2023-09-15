@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button[type="submit"] {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .already_exist {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+<h2>User Registration</h2>
+<form th:action="@{/user/save}" method="post" th:object="${user}">
+    <span th:text="${error}" class="already_exist"></span><br>
+
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" th:field="*{username}" required><br>
+
+    <label for="role">Role:</label>
+    <input type="text" id="role" name="role" th:field="*{role}" /><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" th:field="*{email}" required><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" th:field="*{password}" required><br>
+
+    <label for="file">Upload Profile Picture:</label>
+    <input type="file" id="file" name="file" aria-describedby="inputGroupFileAddon04" aria-label="upload" ><br>
+
+    <button type="submit">Register</button>
+</form>
+<p style="text-align:center;">Already have an account? <a th:href="@{/user/LoginPage}">Click here to Login</a></p>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker News Search</title>
+    <script th:src="@{/css/timeUpdater.js}" type="text/javascript"></script>
+    <link rel="stylesheet" href="//d1sz9gun5ag95e.cloudfront.net/packs/css/application-c5b09a70.css">
+    <meta name="referrer" content="origin">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss">
+    <title>Hacker News</title>
+    <style>
+        .hn-symbol {
+            font-size: 18px;
+            color: white;
+        }
+
+        .horizontal-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-style {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body data-new-gr-c-s-check-loaded="14.1123.0" data-gr-ext-installed="">
+<main id="root">
+    <div class="default light" style="">
+        <div class="container">
+            <header class="SearchHeader container">
+                <div class="SearchHeader_search">
+                    <span class="SearchHeader_logo">
+                        <a th:href="@{/posts/list}">
+                            <img src="//d1sz9gun5ag95e.cloudfront.net/packs/media/images/logo-hn-search-a822432b.png">
+                        </a>
+                        <a >
+                            <label >Search Hacker News</label>
+                        </a>
+                    </span>
+                    <div class="SearchHeader_container">
+                        <form th:action="@{/posts/search}" method="get">
+                            <input type="search" name="search" placeholder="Search by title, url, author..." th:value="${search}" >
+                            <button type="submit">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            <form th:action="@{/posts/search}" method="get"  style="display: inline;">
+                <label>Sort by:</label>
+                <select name="sortBy">
+                    <option value="popularity" th:selected="${selectedSortBy == 'popularity'}">Popularity</option>
+                    <option value="date" th:selected="${selectedSortBy == 'date'}">Date</option>
+                </select>
+                <input type="hidden" name="search" th:value="${search}">
+                <input type="hidden" name="timeRange" th:value="${timeRange}">
+                <input type="submit" value="add">
+            </form>
+            <form th:action="@{/posts/search}" method="get" style="display: inline;">
+                <label>For:</label>
+                <select name="timeRange" id="dateSelector">
+                    <option value="alltime" th:selected="${selectedTimeRange == 'alltime'}">All Time</option>
+                    <option value="lastday" th:selected="${selectedTimeRange == 'lastday'}">Last 24 Hours</option>
+                    <option value="pastweek" th:selected="${selectedTimeRange == 'pastweek'}">Past Week</option>
+                    <option value="pastmonth" th:selected="${selectedTimeRange == 'pastmonth'}">Past Month</option>
+                    <option value="pastyear" th:selected="${selectedTimeRange == 'pastyear'}">Past Year</option>
+                    <option value="customrange" th:selected="${selectedTimeRange == 'customrange'}">Custom Range</option>
+                </select>
+                <div id="customRangeInputs" style="display: none; padding-left:40%;">
+                    <label>Start Date:</label>
+                    <input type="datetime-local" th:value="${startDate}" name="startDate"><br>
+                    <label>End Date:</label>
+                    <input type="datetime-local" th:value="${endDate}" name="endDate">
+                </div>
+                <input type="hidden" name="search" th:value="${search}">
+                <input type="hidden" name="sortBy" th:value="${sortBy}">
+                <input type="submit" value="Filter">
+            </form>
+            <h4 th:text="${stories.content.size()}+'  '+results" style="display: inline;padding-left:80%;"></h4>
+            <script>
+                const dateSelector = document.getElementById("dateSelector");
+                const customRangeInputs = document.getElementById("customRangeInputs");
+
+                dateSelector.addEventListener("change", function () {
+                    if (dateSelector.value === "customrange") {
+                        customRangeInputs.style.display = "block";
+                    } else {
+                        customRangeInputs.style.display = "none";
+                    }
+                });
+            </script>
+
+            <div class="stories">
+                <ul>
+                    <li th:if="${stories != null and stories.content.size() != 0}" th:each="story : ${stories.content}" type="1">
+                        <div>
+                                            <span th:if="${story.category == 'ask'}">
+                                                <a th:href="@{/comments/list(storyId=${story.id})}" th:text="${story.title}"></a><br>
+                                            </span>
+                            <span th:unless="${story.category == 'ask'}">
+                                                <a th:href="${story.url}" target="_blank" th:text="${story.title}"></a><br>
+                                            </span>
+                            <span th:text="${story.score} + ' points by '"></span>|
+                            <span th:if="${story.author != null}" th:text="${story.author.username}"></span>|
+                            <span class="submission-time" th:text="${story.formattedTime}" th:attr="data-timestamp=${story.getSubmissionTime().getTime()}"></span>|
+                            <form th:if="${story.author != null and user != null and !user.hasUpvoted(story) and !user.hasDownvoted(story)}"
+                                  th:action="@{/posts/{id}/upvote(id=${story.id})}" method="post" style="display: inline;">
+                                <button  style="border:0;" type="submit">Upvote</button>
+                            </form>
+                            <form th:if="${story.author != null and user != null and user.hasUpvoted(story)}"
+                                  th:action="@{/posts/{id}/downvote(id=${story.id})}" method="post" style="display: inline;">
+                                <button style="border:0;" type="submit" >Downvote</button>
+                            </form>
+                            <form th:if="${story.author != null and user != null and user.hasDownvoted(story)}"
+                                  th:action="@{/posts/{id}/upvote(id=${story.id})}" method="post" style="display: inline;">
+                                <button style="border:0;" type="submit">Upvote</button>
+                            </form>|
+                            <input type="hidden" name="search" value="search">
+                            <a th:href="@{/comments/list(storyId=${story.id})}">
+                                <span  th:text="${story.comments.size()} + ' comments'"></span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+<div class="pagination">
+        <span th:unless="${stories.first}">
+            <a th:href="@{|${paginationUrl}&page=${stories.number - 1} }">Previous</a>
+        </span>
+    <span th:unless="${stories.last}">
+            <a th:href="@{|${paginationUrl}&page=${stories.number + 1} }">Next</a>
+        </span>
+</div>
+</body>
+<script src="https://d1sz9gun5ag95e.cloudfront.net/packs/application-482016987ad7c182d39d.js"></script>
+</html>

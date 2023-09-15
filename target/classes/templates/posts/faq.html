@@ -1,0 +1,254 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="yc.css">
+    <title>Hacker News FAQ</title>
+    <style>
+        body { font-family:Verdana; font-size:8.5pt; }
+        td { font-family:Verdana; font-size:8.5pt; line-height:138%; }
+        blockquote {line-height:122%; }
+        p { margin-bottom:15px; }
+
+        a:link    { color:#222222; }
+        a:visited { color:#444444; }
+        b { color:#333333; }
+
+        .foot { font-size:7.5pt; }
+        .foot a:link, .foot a:visited { text-decoration:none; }
+        .foot a:hover { text-decoration:underline; }
+
+        .apply a:link { color:#0000ff; font-size:9pt; }
+        .apply a:visited { color:#0000ff; font-size:9pt; }
+
+        .title { font-size:10pt; }
+        .title b { color:#000000; }
+
+        .big { margin-top:3ex; }
+        .small { margin-top:-1.6ex; }
+
+    </style>
+</head>
+
+<body bgcolor=#ffffff>
+<center>
+    <br><br>
+    <table width=500 cellpadding=0>
+        <tr><td bgcolor=#fafaf0>
+            <a th:href="@{/posts/list}"><img src="https://news.ycombinator.com/yc500.gif" border=0 width=500></a>
+            <br><br>
+            <b>Hacker News FAQ</b>
+            <br><br>
+            <b>Are there rules about submissions and comments?</b>
+            <p>
+                <a th:href="@{/posts/guide}">newsguidelines</a>
+            <p>
+                <b>How are stories ranked?</b>
+            <p>
+                The basic algorithm divides points by a power of the time since a
+                story was submitted. Comments in threads are ranked the same way.
+            <p>
+                Other factors affecting rank include user flags, anti-abuse software,
+                software which demotes overheated discussions, account or site weighting,
+                and moderator action.
+            <p>
+                <b>How is a user's karma calculated?</b>
+            <p>
+                Roughly, the number of upvotes on their posts minus the
+                number of downvotes. These don't match up exactly. Some votes are
+                dropped by anti-abuse software.
+            <p>
+                <b>Do posts by users with more karma rank higher?</b>
+            <p>
+                No.
+            <p>
+                <b>Why don't I see down arrows?</b>
+            <p>
+                There are no down arrows on stories. They appear on comments after
+                users reach a certain karma threshold, but never on direct replies.
+            <p>
+                <b>What kind of formatting can you use in comments?</b> <br>
+            <label>
+                Blank lines separate paragraphs.
+                Text surrounded by asterisks is italicized. To get a literal asterisk, use \* or **.
+
+                Text after a blank line that is indented by two or more spaces is reproduced verbatim. (This is intended for code.)
+
+                Urls become links, except in the text field of a submission.
+
+                If your url gets linked incorrectly, put it in < angle brackets> and it should work.
+
+            </label>
+                <b>How do I submit a question?</b>
+            <p>
+                Use the submit link in the top bar, and leave the url field blank.
+            <p>
+                <b>How do I make a link in a text submission?</b>
+            <p>
+                You can't. This is to prevent people from submitting a link
+                with their comments in a privileged position at the top of the
+                page. If you want to submit a link with comments, just submit it, then
+                add a regular comment.
+            <p>
+                <b>What are Ask HN and Show HN?</b>
+            <p>
+                Ask HN lists questions and other text submissions.
+                Show HN is for sharing your personal work and has
+                special rules.
+            <p>
+                <b>Why hasn't my submission appeared on Ask HN or Show HN?</b>
+            <p>
+                All Ask HNs appear on newest and asknew, and all Show HNs on newest and shownew, but there
+                is a small points threshold before a post makes it to
+                    ask or show.
+            <p>
+                <b>What do green usernames mean?</b>
+            <p>
+                Green indicates a new account.
+            <p>
+                <b>Why are some comments faded?</b>
+            <p>
+                Faded text means that a comment has been downvoted. You can read the comment
+                in normal text by clicking on its timestamp to go to its page.
+            <p>
+                <b id='flag'>What does [flagged] mean?</b>
+            <p>
+                Users flagged the post as breaking the guidelines
+                or otherwise not belonging on HN.
+            <p>
+                Moderators sometimes also add [flagged] (though not usually on
+                submissions), and sometimes turn flags off when they are unfair.
+            <p>
+                How do I flag a comment
+            <p>
+                Click on its timestamp to go to its page, then click the 'flag' link
+                at the top. There's a small karma threshold before flag links appear.
+            <p>
+                What does [dead] mean?
+            <p>
+                The post was killed by software, user flags, or moderators.
+            <p>
+                Dead posts aren't displayed by default, but you can see them all
+                by turning on 'showdead' in your profile.
+            <p id='cvouch'>
+                If you see a [dead] post that shouldn't be dead, you can vouch for it.
+                Click on its timestamp to go to its page, then click 'vouch' at the
+                top. When enough users do this, the post is restored. There's a small
+                karma threshold before vouch links appear.
+            <p>
+                <b id='deleted'>What does [deleted] mean?</b>
+            <p>
+                The author deleted the post outright, or asked us to. Unlike dead posts, these remain deleted even when showdead is
+                turned on.
+            <p>
+                <b id='reposts'>Are reposts ok?</b>
+            <p>
+                If a story has not had significant attention in the last year or so,
+                a small number of reposts is ok. Otherwise we bury reposts as duplicates.
+            <p>
+                Please don't delete and repost the same story. Deletion is for things
+                that shouldn't have been submitted in the first place.
+            <p>
+                <b>Are paywalls ok?</b>
+            <p>
+                It's ok to post stories from sites with paywalls that have workarounds.
+            <p>
+                In comments, it's ok to ask how to read an article and to help other
+                users do so. But please don't post complaints about paywalls. Those
+                are off topic. More.
+            <p>
+                <b id='ring'>Can I ask people to upvote my submission?</b>
+            <p>
+                No. Users should vote for a story because they personally find it
+                intellectually interesting, not because someone has content to
+                promote. We penalize or ban submissions, accounts, and sites that
+                break this rule, so please don't.
+            <p>
+                <b>Can I ask people to comment on my submission?</b>
+            <p>
+                No, for the same reason. It's also not in your interest: HN
+                readers are sensitive to this and will detect it, flag it,
+                and use unkind words like 'spam'.
+            <p>
+                <b>Can I post a job ad?</b>
+            <p>
+                Please don't post job ads as submissions to HN.
+            <p>
+                A regular "Who Is Hiring?" thread appears on the first weekday of each
+                month (or Jan 2). Most job ads are welcome there. Only an account called
+                whoishiring is allowed to
+                submit the thread itself. This prevents a race to post it first.
+            <p id='jobads'>
+                Another kind of job ad is reserved for YC-funded startups. These
+                appear on the front page, but are not stories: they have no vote arrows,
+                points, or comments. They begin part-way down and fall steadily.
+                Only one is on the front page at a time. The rest are listed
+                at jobs.
+            <p>
+                <b id='yc'>What's the relationship between YC and HN?</b>
+                HN gives three features to YC:
+                job ads (see above) and startup launches
+                get placed on the front page, and YC founder names
+                are displayed to other YC alumni in orange.
+            <p>
+                <b>Are negative stories about YC suppressed on HN?</b>
+            <p>
+                No, we moderate less, not more, when YC or a YC startup is the topic.
+                The good will of the community is worth more than any story.
+            <p>
+                <b>Why can't I post a comment to a thread?</b>
+            <p>
+                Threads are closed to new comments after two weeks, or if the
+                submission has been killed by software, moderators, or user flags.
+            <p>
+                <b>Why is A ranked below B even though A has more points
+                    and is newer?</b>
+            <p>
+                You can't derive rank from votes and time alone. See "How are stories ranked?" above.
+            <p>
+                <b>In my profile, what is delay?</b>
+            <p>
+                It gives you time to edit your comments before they appear to others.
+                Set it to the number of minutes you'd like. The maximum is 10.
+            <p>
+                <b>In my profile, what is noprocrast?</b>
+            <p>
+                It's a way to help you prevent yourself from spending too much time on
+                HN. If you turn it on you'll only be allowed to visit the site for
+                maxvisit minutes at a time, with gaps of minaway minutes in between.
+                The defaults are 20 and 180, which would let you view the site for 20
+                minutes at a time, and then not allow you back in for 3 hours.
+            <p>
+                <b>How do I reset my password?</b>
+            <p>
+                If you have an email address in your profile, you can do that If
+                you haven't, email hn@ycombinator.com for help.
+            <p>
+                <b>Can I change my username?</b>
+            <p>
+                Yes. Email hn@ycombinator.com and we'll help.
+            <p>
+                <b>Can I delete my account?</b>
+            <p>
+                We try not to delete entire account histories because that would gut
+                the threads the account had participated in. However, we care about
+                protecting individual users and take care of privacy requests every
+                day, so if we can help, please email hn@ycombinator.com. We don't want
+                anyone to get in trouble from anything they posted to HN.
+            <p>
+                <b>My IP address seems to be banned. How can I unban it?</b>
+            <p>
+                If you request many pages too quickly, your IP address might get
+                banned.
+                This self-serve
+                unbanning procedure</a> works most of the time. If not, email hn@ycombinator.com.
+            <p>
+
+                <br><br><br>
+            <table width=100% bgcolor=#ff6600 cellpadding=0><tr><td></td></tr></table>
+            <p align=center>
+<span class=foot>
+
+<br><br>
+</span>
+        </td></tr></table>
+</center>
+</body>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" op="news" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta name="referrer" content="origin">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss">
+    <script th:src="@{/css/timeUpdater.js}" type="text/javascript"></script>
+
+    <title>Hacker News</title>
+    <style>
+        .hn-symbol {
+            font-size: 18px;
+            color: white;
+        }
+
+        .horizontal-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-style {
+            margin-right: 10px;
+        }
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript">
+        // Function to load stories for a specific date using AJAX
+        function loadStoriesForDate(date) {
+            $.ajax({
+                type: "GET",
+                url: "/posts/list",
+                data: { date: date },
+                success: function(data) {
+                    // Update the stories and other elements on the page with new data
+                    // You can use jQuery or plain JavaScript to update the DOM here
+                    // For example, you can replace the stories content with the new data.
+                    // Make sure to set the correct ID or selector for your stories container.
+                    $("#stories-container").html(data);
+                },
+                error: function(error) {
+                    console.error("Error fetching data:", error);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<center>
+    <table id="hnmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef">
+        <tr>
+            <td bgcolor="#ff6600">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
+                    <tr>
+                        <td style="width:18px;padding-right:4px">
+                            <a th:href="@{/posts/list}">
+                                <span class="hn-symbol">Y</span>
+                            </a>
+                        </td>
+                        <td style="line-height: 12pt; height: 10px;">
+                                <span class="pagetop">
+                                    <div class="horizontal-menu">
+                                        <b class="btn-style">
+                                            <a th:href="@{/posts/list}">Hacker News</a>
+                                        </b>
+                                        <a href="/posts/welcome"  class="btn-style" th:if="${#authorization.expression('isAuthenticated()')}">Welcome |</a>
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="new" value="new">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">new</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="past" value="past">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">past</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <button style="background-color:#ff6600;border:0;" type="submit"  name="comments" class="btn-style">comments</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="ask" value="ask">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">ask</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="show" value="show">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">show</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="job" value="job">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">jobs</button>
+                                        </form>
+                                        <a th:href="@{/posts/createstory}" th:if="${#authorization.expression('isAuthenticated()')}" th:text="submit" class="btn-style"></a>
+                                    </div>
+                                </span>
+                        </td>
+                        <td style="text-align:right;padding-right:4px;">
+                                <span class="pagetop">
+                                    <a th:href="@{/posts/profile}"
+                                       th:text="${#authentication.name}" th:if="${#authorization.expression('isAuthenticated()')}"><span th:text="${#authentication.name}"></span></a>
+
+                                    <div th:if="${#authorization.expression('isAuthenticated()')}">
+                                        <form th:action="@{/logout}" method="post">
+                                            <input type="submit" value="logout">
+                                        </form>
+                                    </div>
+                                    <div th:unless="${#authorization.expression('isAuthenticated()')}">
+                                        <a th:href="@{/user/LoginPage}" >Login</a><br>
+                                        <a th:href="@{/user/register}" >Register</a>
+                                    </div>
+                                </span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr id="pagespace" title="" style="height:10px"></tr>
+        <tr>
+            <td>
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <div class="stories">
+                                <!--                                <div class="navigation" th:if="${!past.isEmpty()}">-->
+                                <!--                                    <span class="submission-time" th:text="${date}"></span>-->
+                                <!--                                    <a id="prevDayLink" href="#" th:href="@{/posts/list(date='prevDay')}">Go back a day</a>-->
+                                <!--                                    <a id="prevMonthLink" href="#" th:href="@{/posts/list(date='prevMonth')}">Go back a month</a>-->
+                                <!--                                    <a id="prevYearLink" href="#" th:href="@{/posts/list(date='prevYear')}">Go back a year</a>-->
+
+                                <!--                                    <a id="nextDayLink" href="#" th:href="@{/posts/list(date='nextDay')}">Go forward a day</a>-->
+                                <!--                                    <a id="nextMonthLink" href="#" th:href="@{/posts/list(date='nextMonth')}">Go forward a month</a>-->
+                                <!--                                    <a id="nextYearLink" href="#" th:href="@{/posts/list(date='nextYear')}">Go forward a year</a>-->
+                                <!--                                </div>-->
+                                <ul>
+                                    <div  th:if="${stories != null and stories.content.size() != 0}" th:each="story : ${stories.content}" type="1">
+                                        <li th:each="comment:${story.comments}">
+                                            <span th:if="${comment.author != null}" th:text="${comment.score} + '| points | '+${comment.author.username}" class="comment-username"></span> |
+                                            <span class="submission-time" th:text="${comment.formattedTime}" th:attr="data-timestamp=${comment.getSubmissionTime().getTime()}"></span>|
+                                            <a th:href="@{/posts/search(search=${story.title})}" th:value="${story.title}" th:text="past"></a> |
+                                            <form th:if="${comment.author != null and user != null and !user.hasUpvotedComment(comment) and !user.hasDownvotedComment(comment)}"
+                                                  th:action="@{/comments/{id}/upvote(id=${comment.id})}" method="post" style="display: inline;">
+                                                <input type="hidden" name="storyId" th:value="${story.id}">
+                                                <button style="border:0;" type="submit">Upvote |</button>
+                                            </form>
+                                            <form th:if="${comment.author != null and user != null and user.hasUpvotedComment(comment)}"
+                                                  th:action="@{/comments/{id}/downvote(id=${comment.id})}" method="post" style="display: inline;">
+                                                <input type="hidden" name="storyId" th:value="${story.id}">
+                                                <button style="border:0;"  type="submit">Downvote |</button>
+                                            </form>
+                                            <form th:if="${comment.author != null and user != null and user.hasDownvotedComment(comment)}"
+                                                  th:action="@{/comments/{id}/upvote(id=${comment.id})}" method="post" style="display: inline;">
+                                                <input type="hidden" name="storyId" th:value="${story.id}">
+                                                <button style="border:0;"  type="submit">Upvote |</button>
+                                            </form>
+
+                                            <a th:href="@{/comments/list(storyId=${story.id})}">
+                                                <span  th:text="on +' : '+ ${story.title} "></span>
+                                            </a><br>
+                                            <p style="padding-left:10;" th:text=" '> ' + ${comment.text}"></p>
+                                        </li>
+                                    </div>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="s.gif" height="10" width="0">
+                <table width="100%" cellspacing="0" cellpadding="1">
+                    <tr>
+                        <td bgcolor="#ff6600"></td>
+                    </tr>
+                </table>
+                <br>
+                <center>
+                        <span class="yclinks">
+                            <a th:href="@{/posts/guide}">Guidelines</a>
+                            |<a th:href="@{/posts/faq}">FAQ</a>
+                            | <a href="https://github.com/HackerNews/API">API</a>
+                            | <a th:href="@{/posts/security}">Security</a>
+                            | <a href="https://www.ycombinator.com/legal/">Legal</a>
+                            | <a href="https://www.ycombinator.com/apply/">Apply to YC</a>
+                            | <a href="mailto:hn@ycombinator.com">Contact</a>
+                        </span>
+                    <br>
+                    <br>
+                    <form th:action="@{/posts/search}" method="get">
+                        <input type="search" name="search" placeholder="Search by title, url, author..." th:value="${search}">
+                        <button type="submit">Search</button>
+                    </form>
+                </center>
+            </td>
+        </tr>
+    </table>
+</center>
+
+<!-- Pagination -->
+<div class="pagination">
+        <span th:unless="${stories.first}">
+            <a th:href="@{|${paginationUrl}&page=${stories.number - 1} }">Previous</a>
+        </span>
+    <span th:unless="${stories.last}">
+            <a th:href="@{|${paginationUrl}&page=${stories.number + 1} }">Next</a>
+        </span>
+</div>
+</body>
+<script type='text/javascript' src='hn.js?FB9r8Mg3BW91HnFGOjHc'></script>
+</html>

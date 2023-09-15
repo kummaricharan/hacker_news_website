@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px;
+        }
+
+        .message {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .success-message {
+            color: #00cc00;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div th:if="${param.error}">
+        <p class="message">Check your login credentials</p>
+    </div>
+    <div th:if="${param.logout}">
+        <p class="message">You are successfully logged out</p>
+    </div>
+    <form action="#" th:action="@{/authenticateUser}" method="post">
+        <span class="success-message" th:text="${successMessage}"></span>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <p>If you don't have an account, <a th:href="@{/user/register}">click here to register</a>.</p>
+    <a th:href="@{/user/changepw}">forgot password ......!</a>
+</div>
+</body>
+</html>

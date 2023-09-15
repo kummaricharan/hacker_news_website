@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Submit a Story</title>
+    <link rel="stylesheet" href="/css/create_post.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <a th:href="@{/posts/list}" class="home-link">Y</a> Submit
+    </header>
+    <form th:action="@{/posts/save}" th:object="${story}" method="post">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" th:field="*{title}" th:required="required">
+        </div>
+
+        <div class="form-group">
+            <label for="url">URL</label>
+            <input type="text" id="url" name="url" th:field="*{url}">
+        </div>
+
+        <div class="form-group">
+            <label for="text">Text</label>
+            <textarea id="text" name="text" rows="4" th:field="*{text}"></textarea>
+
+        </div>
+
+        <p>Leave the URL blank to submit a question for discussion. If there is no URL, text will appear at the top of the thread. If there is a URL, text is optional.</p>
+        <div class="form-group category">
+            <label for="show">
+                <input type="radio" id="show" name="category" value="show"> Show
+            </label>
+
+            <label for="job">
+                <input type="radio" id="job" name="category" value="job"> Job
+            </label>
+
+            <label for="ask">
+                <input type="radio" id="ask" name="category" value="ask"> Ask
+            </label>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>

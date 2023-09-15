@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <script th:src="@{/css/timeUpdater.js}" type="text/javascript"></script>
+    <link rel="stylesheet" th:href="@{/css/home_page.css}">
+    <script>
+        /* Add this CSS to your stylesheet or in a <style> tag in your HTML */
+         .comment-username,
+         .submission-time,
+         .delete-form,
+         span {
+             display: inline-block;
+             vertical-align: middle;
+         }
+
+         .submission-time::before {
+             content: "| ";
+             margin-right: 5px; /* Adjust the margin as needed for spacing */
+         }
+
+         .delete-form {
+             margin-left: 10px; /* Adjust the margin as needed for spacing */
+         }
+
+         span::after {
+             content: "| ";
+             margin-left: 5px; /* Adjust the margin as needed for spacing */
+         }
+
+
+    </script>
+    <style>
+        <style>
+        .hn-symbol {
+            font-size: 18px;
+            color: white;
+        }
+
+        .horizontal-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-style {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <table id="hnmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef">
+        <tr>
+            <td bgcolor="#ff6600">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
+                    <tr>
+                        <td style="width:18px;padding-right:4px">
+                            <a th:href="@{/posts/list}">
+                                <span class="hn-symbol">Y</span>
+                            </a>
+                        </td>
+                        <td style="line-height: 12pt; height: 10px;">
+                                <span class="pagetop">
+                                    <div class="horizontal-menu">
+                                        <b class="btn-style">
+                                            <a th:href="@{/posts/list}">Hacker News</a>
+                                        </b>
+                                        <a href="/posts/welcome"  class="btn-style" th:if="${#authorization.expression('isAuthenticated()')}">Welcome |</a>
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="new" value="new">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">new</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="past" value="past">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">past</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <button style="background-color:#ff6600;border:0;" type="submit"  name="comments" class="btn-style">comments</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="ask" value="ask">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">ask</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="show" value="show">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">show</button>
+                                        </form>
+                                        |
+                                        <form th:action="@{/posts/list}" method="get">
+                                            <input type="hidden" name="jobs" value="jobs">
+                                            <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">jobs</button>
+                                        </form>
+                                        <a th:href="@{/posts/createstory}" th:if="${#authorization.expression('isAuthenticated()')}" th:text="submit" class="btn-style"></a>
+                                    </div>
+                                </span>
+                        </td>
+                        <td style="text-align:right;padding-right:4px;">
+                                <span class="pagetop">
+                                    <a th:href="@{/posts/profile}"
+                                       th:text="${#authentication.name}" th:if="${#authorization.expression('isAuthenticated()')}"><span th:text="${#authentication.name}"></span></a>
+                                    <div th:if="${#authorization.expression('isAuthenticated()')}">
+                                        <form th:action="@{/logout}" method="post">
+                                            <input type="submit" value="logout">
+                                        </form>
+                                    </div>
+                                    <div th:unless="${#authorization.expression('isAuthenticated()')}">
+                                        <a th:href="@{/user/LoginPage}" >Login</a><br>
+                                        <a th:href="@{/user/register}" >Register</a>
+                                    </div>
+                                </span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <div>
+        <span><h5><a th:href="${story.url}" target="_blank" th:text="${story.title}"></a></h5></span>
+        <span th:text="${story.score} + ' points by '+${story.author.username}"></span>|
+        <form th:if="${story.author != null and user != null and !user.hasUpvoted(story) and !user.hasDownvoted(story)}"
+              th:action="@{/posts/{id}/upvote(id=${story.id})}" method="post" style="display: inline;">
+            <button  style="border:0;" type="submit">Upvote</button>
+        </form>
+        <form th:if="${story.author != null and user != null and user.hasUpvoted(story)}"
+              th:action="@{/posts/{id}/downvote(id=${story.id})}" method="post" style="display: inline;">
+            <button style="border:0;" type="submit" >Downvote</button>
+        </form>
+        <form th:if="${story.author != null and user != null and user.hasDownvoted(story)}"
+              th:action="@{/posts/{id}/upvote(id=${story.id})}" method="post" style="display: inline;">
+            <button style="border:0;" type="submit">Upvote</button>
+        </form>|
+        <span class="submission-time" th:text="${story.formattedTime}" th:attr="data-timestamp=${story.getSubmissionTime().getTime()}"></span>
+        <span>| <a th:href="@{/posts/search(search=${story.title})}" th:value="${story.title}" th:text="past"></a>
+            <input type="hidden" name="search" placeholder="Search by title, url, author..." th:value="${story.title}" >|
+        <a th:href=" @{/comments/favorite(storyId=${story.id})}" th:text="favorite" th:if="${!user.favoriteStories.contains(story)}"></a>
+        <a th:href=" @{/comments/unfavorite(storyId=${story.id})}" th:text="unfavorite" th:if="${user.favoriteStories.contains(story)}"></a></span>
+        |<a th:href="@{/comments/list(storyId=${story.id})}">
+            <span th:text="${story.comments.size()} + ' comments'"></span>
+        </a>
+    </div>
+</div>
+<div>
+    <span th:if="${story.category == 'ask'}">
+        <p th:text="${story.text}"></p><br>
+    </span>
+</div>
+<form class="reply-form" th:action="@{/comments/save}" th:object="${comment}" method="post">
+    <input type="hidden" name="postId" th:value="${story.id}">
+    <input type="hidden" name="commentId" th:value="${comment.id}">
+    <textarea name="text" rows="4" cols="60" th:field="*{text}" wrap="virtual"></textarea>
+    <br><br>
+    If you haven't already, would you mind reading about HN's
+    <a href="newswelcome.html">
+        <u>approach to comments</u>
+    </a>
+    and
+    <a href="newsguidelines.html#comments">
+        <u>site guidelines</u>
+    </a>?
+    <br><br>
+    <input type="submit" value="add comment">
+</form>
+
+<div th:each="comment, commentIndex : ${comments}" class="comment">
+    <p>
+    <div>
+        <ins>
+            <span th:if="${comment.author != null}" th:text="${comment.score} + '| points by '+${comment.author.username}" class="comment-username"></span> |
+            <span class="submission-time" th:text="${comment.formattedTime}" th:attr="data-timestamp=${comment.formattedTime}"></span>|
+            <form th:if="${comment.author != null and user != null and !user.hasUpvotedComment(comment) and !user.hasDownvotedComment(comment)}"
+                  th:action="@{/comments/{id}/upvote(id=${comment.id})}" method="post" style="display: inline;">
+                <input type="hidden" name="storyId" th:value="${story.id}">
+                <button style="border:0;" type="submit">Upvote </button>
+            </form>
+            <form th:if="${comment.author != null and user != null and user.hasUpvotedComment(comment)}"
+                  th:action="@{/comments/{id}/downvote(id=${comment.id})}" method="post" style="display: inline;">
+                <input type="hidden" name="storyId" th:value="${story.id}">
+                <button style="border:0;"  type="submit">Downvote </button>
+            </form>
+            <form th:if="${comment.author != null and user != null and user.hasDownvotedComment(comment)}"
+                  th:action="@{/comments/{id}/upvote(id=${comment.id})}" method="post" style="display: inline;">
+                <input type="hidden" name="storyId" th:value="${story.id}">
+                <button style="border:0;"  type="submit">Upvote</button>
+            </form>
+        </ins>
+
+    <!--        <span th:if="${commentIndex.index > 0}">-->
+<!--        | <a th:href="'#'" th:onclick="'showComment(' + ${comments[commentIndex.index - 1].id} + ')'" th:text="prev"></a>-->
+<!--        </span>-->
+<!--            <span th:if="${commentIndex.index < (comments.size() - 1)}">-->
+<!--            | <a th:href="'#'" th:onclick="'showComment(' + ${comments[commentIndex.index + 1].id} + ')'" th:text="next"></a>-->
+<!--        </span>-->
+    </div>
+
+    </p>
+    <small th:text="'-> '+${comment.text}"></small><br><br>
+    <a th:href="@{/comments/Comment(commentId=${comment.id}, storyId=${story?.id})}" th:text="Reply"></a>
+    <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+        <input type="hidden" name="commentId" th:value="${comment.id}">
+        <input type="hidden" name="storyId" th:value="${story.id}">
+        <button style="border: 0;" th:text="delete" th:if="${#strings.equals(comment.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+    </form>
+    <div style="padding-left:20px;" th:each="childComment : ${comment.replies}" class="reply">
+        <ins>
+            <span th:if="${childComment.author != null}" th:text="${childComment.score} + '| points by '+${childComment.author.username}"></span>|
+            <span class="submission-time" th:text="${childComment.formattedTime}" th:attr="data-timestamp=${childComment.getSubmissionTime().getTime()}"></span>
+<!--            |<form th:if="${childComment.author != null and user != null and !user.hasUpvotedComment(childComment) and !user.hasDownvotedComment(childComment)}"-->
+<!--                  th:action="@{/comments/{id}/upvote(id=${childComment.id})}" method="post" style="display: inline;">-->
+<!--                <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                <button style="border:0;" type="submit">Upvote </button>-->
+<!--            </form>-->
+<!--            <form th:if="${childComment.author != null and user != null and user.hasUpvotedComment(childComment)}"-->
+<!--                  th:action="@{/comments/{id}/downvote(id=${childComment.id})}" method="post" style="display: inline;">-->
+<!--                <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                <button style="border:0;"  type="submit">Downvote </button>-->
+<!--            </form>-->
+<!--            <form th:if="${childComment.author != null and user != null and user.hasDownvotedComment(childComment)}"-->
+<!--                  th:action="@{/comments/{id}/upvote(id=${childComment.id})}" method="post" style="display: inline;">-->
+<!--                <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                <button style="border:0;"  type="submit">Upvote</button>-->
+<!--            </form>-->
+        </ins><br><br>
+        <small th:text="'-> ' + ${childComment.text}"></small><br><br>
+        <a th:href="@{/comments/Comment(storyId=${story?.id},commentId=${childComment.id})}" th:text="Reply"></a>
+        <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+            <input type="hidden" name="commentId" th:value="${childComment.id}">
+            <input type="hidden" name="storyId" th:value="${story.id}">
+            <button style="border: 0;" th:text="delete" th:if="${#strings.equals(childComment.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+        </form>
+        <div style="padding-left:40px" th:each="grandchildComment : ${childComment.replies}" class="reply">
+
+            <ins>
+                <span th:if="${grandchildComment.author != null}" th:text="${grandchildComment.score} + '| points by '+${grandchildComment.author.username}"></span>|
+                <span class="submission-time" th:text="${grandchildComment.formattedTime}" th:attr="data-timestamp=${grandchildComment.getSubmissionTime().getTime()}"></span>
+<!--                |<form th:if="${grandchildComment.author != null and user != null and !user.hasUpvotedComment(grandchildComment) and !user.hasDownvotedComment(grandchildComment)}"-->
+<!--                      th:action="@{/comments/{id}/upvote(id=${grandchildComment.id})}" method="post" style="display: inline;">-->
+<!--                    <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                    <button style="border:0;" type="submit">Upvote </button>-->
+<!--                </form>-->
+<!--                <form th:if="${grandchildComment.author != null and user != null and user.hasUpvotedComment(grandchildComment)}"-->
+<!--                      th:action="@{/comments/{id}/downvote(id=${grandchildComment.id})}" method="post" style="display: inline;" >-->
+<!--                    <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                    <button style="border:0;"  type="submit">Downvote </button>-->
+<!--                </form>-->
+<!--                <form th:if="${grandchildComment.author != null and user != null and user.hasDownvotedComment(grandchildComment)}"-->
+<!--                      th:action="@{/comments/{id}/upvote(id=${grandchildComment.id})}" method="post" style="display: inline;">-->
+<!--                    <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                    <button style="border:0;"  type="submit">Upvote </button>-->
+<!--                </form>-->
+            </ins><br><br>
+            <small th:text="${'-> '+grandchildComment.text}"></small><br><br>
+            <a th:href="@{/comments/Comment(storyId=${story?.id}, commentId=${grandchildComment.id})}" th:text="Reply"></a>
+            <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+                <input type="hidden" name="commentId" th:value="${grandchildComment.id}">
+                <input type="hidden" name="storyId" th:value="${story.id}">
+                <button style="border: 0;" th:text="delete" th:if="${#strings.equals(grandchildComment.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+            </form>
+            <div style="padding-left:60px;" th:each="greatGrandchildComment : ${grandchildComment.replies}" class="reply">
+                <ins>
+                    <span th:if="${greatGrandchildComment.author != null}" th:text="${greatGrandchildComment.score} + '| points by '+${greatGrandchildComment.author.username}"></span>|
+                    <span class="submission-time" th:text="${greatGrandchildComment.formattedTime}" th:attr="data-timestamp=${greatGrandchildComment.getSubmissionTime().getTime()}"></span>
+<!--                    |<form th:if="${greatGrandchildComment.author != null and user != null and !user.hasUpvotedComment(greatGrandchildComment) and !user.hasDownvotedComment(greatGrandchildComment)}"-->
+<!--                          th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment.id})}" method="post" style="display: inline;">-->
+<!--                        <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                        <button style="border:0;" type="submit">Upvote</button>-->
+<!--                    </form>-->
+<!--                    <form th:if="${greatGrandchildComment.author != null and user != null and user.hasUpvotedComment(greatGrandchildComment)}"-->
+<!--                          th:action="@{/comments/{id}/downvote(id=${greatGrandchildComment.id})}" method="post" style="display: inline;">-->
+<!--                        <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                        <button style="border:0;"  type="submit">Downvote</button>-->
+<!--                    </form>-->
+<!--                    <form th:if="${greatGrandchildComment.author != null and user != null and user.hasDownvotedComment(greatGrandchildComment)}"-->
+<!--                          th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment.id})}" method="post" style="display: inline;">-->
+<!--                        <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                        <button style="border:0;"  type="submit">Upvote</button>-->
+<!--                    </form>-->
+                </ins><br><br>
+                <small th:text="'-> '+${greatGrandchildComment.text}"></small><br><br>
+                <a th:href="@{/comments/Comment(storyId=${story?.id},commentId=${greatGrandchildComment.id})}" th:text="Reply"></a>
+                <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+                    <input type="hidden" name="commentId" th:value="${greatGrandchildComment.id}">
+                    <input type="hidden" name="storyId" th:value="${story.id}">
+                    <button style="border: 0;" th:text="delete" th:if="${#strings.equals(greatGrandchildComment.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+                </form>
+                <div style="padding-left:80px;" th:each="greatGrandchildComment1 : ${greatGrandchildComment.replies}" class="reply">
+                    <ins>
+                        <span th:if="${greatGrandchildComment1.author != null}" th:text="${greatGrandchildComment1.score} + '| points by '+${greatGrandchildComment1.author.username}"></span>|
+                        <span class="submission-time" th:text="${greatGrandchildComment1.formattedTime}" th:attr="data-timestamp=${greatGrandchildComment1.getSubmissionTime().getTime()}"></span>
+<!--                        |<form th:if="${greatGrandchildComment1.author != null and user != null and !user.hasUpvotedComment(greatGrandchildComment1) and !user.hasDownvotedComment(greatGrandchildComment1)}"-->
+<!--                              th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment1.id})}" method="post" style="display: inline;">-->
+<!--                            <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                            <button style="border:0;" type="submit">Upvote</button>-->
+<!--                        </form>-->
+<!--                        <form th:if="${greatGrandchildComment1.author != null and user != null and user.hasUpvotedComment(greatGrandchildComment1)}"-->
+<!--                              th:action="@{/comments/{id}/downvote(id=${greatGrandchildComment1.id})}" method="post" style="display: inline;">-->
+<!--                            <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                            <button style="border:0;"  type="submit">Downvote</button>-->
+<!--                        </form>-->
+<!--                        <form th:if="${greatGrandchildComment1.author != null and user != null and user.hasDownvotedComment(greatGrandchildComment1)}"-->
+<!--                              th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment1.id})}" method="post" style="display: inline;">-->
+<!--                            <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                            <button style="border:0;"  type="submit">Upvote</button>-->
+<!--                        </form>-->
+                    </ins><br><br>
+                    <small th:text="'-> '+${greatGrandchildComment1.text}"></small><br><br>
+                    <a th:href="@{/comments/Comment(storyId=${story?.id}, commentId=${greatGrandchildComment1.id})}" th:text="Reply"></a>
+                    <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+                        <input type="hidden" name="commentId" th:value="${greatGrandchildComment1.id}">
+                        <input type="hidden" name="storyId" th:value="${story.id}">
+                        <button style="border: 0;" th:text="delete" th:if="${#strings.equals(greatGrandchildComment1.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+                    </form>
+                    <div style="padding-left:100px;" th:each="greatGrandchildComment2 : ${greatGrandchildComment1.replies}" class="reply">
+                        <ins>
+                            <span th:if="${greatGrandchildComment2.author != null}" th:text="${greatGrandchildComment2.score} + '| points by '+${greatGrandchildComment2.author.username}"></span>|
+                            <span class="submission-time" th:text="${greatGrandchildComment2.formattedTime}" th:attr="data-timestamp=${greatGrandchildComment2.getSubmissionTime().getTime()}"></span>
+<!--                            |<form th:if="${greatGrandchildComment2.author != null and user != null and !user.hasUpvotedComment(greatGrandchildComment2) and !user.hasDownvotedComment(greatGrandchildComment2)}"-->
+<!--                                  th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment2.id})}" method="post" style="display: inline;">-->
+<!--                                <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                <button style="border:0;" type="submit">Upvote</button>-->
+<!--                            </form>-->
+<!--                            <form th:if="${greatGrandchildComment2.author != null and user != null and user.hasUpvotedComment(greatGrandchildComment2)}"-->
+<!--                                  th:action="@{/comments/{id}/downvote(id=${greatGrandchildComment2.id})}" method="post" style="display: inline;">-->
+<!--                                <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                <button style="border:0;"  type="submit">Downvote </button>-->
+<!--                            </form>-->
+<!--                            <form th:if="${greatGrandchildComment2.author != null and user != null and user.hasDownvotedComment(greatGrandchildComment2)}"-->
+<!--                                  th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment2.id})}" method="post" style="display: inline;">-->
+<!--                                <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                <button style="border:0;"  type="submit">Upvote</button>-->
+<!--                            </form>-->
+                        </ins><br><br>
+                        <small th:text="'-> '+${greatGrandchildComment2.text}"></small><br><br>
+                        <a th:href="@{/comments/Comment(storyId=${story?.id}, commentId=${greatGrandchildComment2.id})}" th:text="Reply"></a>
+                        <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+                            <input type="hidden" name="commentId" th:value="${greatGrandchildComment2.id}">
+                            <input type="hidden" name="storyId" th:value="${story.id}">
+                            <button style="border: 0;" th:text="delete" th:if="${#strings.equals(greatGrandchildComment2.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+                        </form>
+                        <div style="padding-left:115px;" th:each="greatGrandchildComment3 : ${greatGrandchildComment2.replies}" class="reply">
+                            <ins>
+                                <span th:if="${greatGrandchildComment3.author != null}" th:text="${greatGrandchildComment3.score} + '| points by '+${greatGrandchildComment3.author.username}"></span>|
+                                <span class="submission-time" th:text="${greatGrandchildComment3.formattedTime}" th:attr="data-timestamp=${greatGrandchildComment3.getSubmissionTime().getTime()}"></span>
+<!--                                |<form th:if="${greatGrandchildComment3.author != null and user != null and !user.hasUpvotedComment(greatGrandchildComment3) and !user.hasDownvotedComment(greatGrandchildComment3)}"-->
+<!--                                      th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment3.id})}" method="post" style="display: inline;">-->
+<!--                                    <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                    <button style="border:0;" type="submit">Upvote</button>-->
+<!--                                </form>-->
+<!--                                <form th:if="${greatGrandchildComment3.author != null and user != null and user.hasUpvotedComment(greatGrandchildComment3)}"-->
+<!--                                      th:action="@{/comments/{id}/downvote(id=${greatGrandchildComment3.id})}" method="post" style="display: inline;">-->
+<!--                                    <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                    <button style="border:0;"  type="submit">Downvote</button>-->
+<!--                                </form>-->
+<!--                                <form th:if="${greatGrandchildComment3.author != null and user != null and user.hasDownvotedComment(greatGrandchildComment3)}"-->
+<!--                                      th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment3.id})}" method="post" style="display: inline;">-->
+<!--                                    <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                    <button style="border:0;"  type="submit">Upvote</button>-->
+<!--                                </form>-->
+                            </ins><br><br>
+                            <small th:text="'-> '+${greatGrandchildComment3.text}"></small><br><br>
+                            <a th:href="@{/comments/Comment(storyId=${story?.id}, commentId=${greatGrandchildComment3.id})}" th:text="Reply"></a>
+                            <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+                                <input type="hidden" name="commentId" th:value="${greatGrandchildComment3.id}">
+                                <input type="hidden" name="storyId" th:value="${story.id}">
+                                <button style="border: 0;" th:text="delete" th:if="${#strings.equals(greatGrandchildComment3.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+                            </form>
+                            <div style="padding-left:125px;" th:each="greatGrandchildComment4 : ${greatGrandchildComment3.replies}" class="reply">
+                                    <ins>
+                                        <span th:if="${greatGrandchildComment4.author != null}" th:text="${greatGrandchildComment4.score} + '| points by '+${greatGrandchildComment4.author.username}"></span>|
+                                        <span class="submission-time" th:text="${greatGrandchildComment4.formattedTime}" th:attr="data-timestamp=${greatGrandchildComment4.getSubmissionTime().getTime()}"></span>
+<!--                                        |<form th:if="${greatGrandchildComment4.author != null and user != null and !user.hasUpvotedComment(greatGrandchildComment4) and !user.hasDownvotedComment(greatGrandchildComment4)}"-->
+<!--                                              th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment4.id})}" method="post" style="display: inline;">-->
+<!--                                            <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                            <button style="border:0;" type="submit">Upvote</button>-->
+<!--                                        </form>-->
+<!--                                        <form th:if="${greatGrandchildComment4.author != null and user != null and user.hasUpvotedComment(greatGrandchildComment4)}"-->
+<!--                                              th:action="@{/comments/{id}/downvote(id=${greatGrandchildComment4.id})}" method="post" style="display: inline;">-->
+<!--                                            <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                            <button style="border:0;"  type="submit">Downvote</button>-->
+<!--                                        </form>-->
+<!--                                        <form th:if="${greatGrandchildComment4.author != null and user != null and user.hasDownvotedComment(greatGrandchildComment4)}"-->
+<!--                                              th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment4.id})}" method="post" style="display: inline;">-->
+<!--                                            <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                            <button style="border:0;"  type="submit">Upvote</button>-->
+<!--                                        </form>-->
+                                    </ins><br><br>
+                                <small th:text="'-> '+${greatGrandchildComment4.text}"></small><br><br>
+                                <a th:href="@{/comments/Comment(storyId=${story?.id}, commentId=${greatGrandchildComment4.id})}" th:text="Reply"></a>
+                                <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+                                    <input type="hidden" name="commentId" th:value="${greatGrandchildComment4.id}">
+                                    <input type="hidden" name="storyId" th:value="${story.id}">
+                                    <button style="border: 0;" th:text="delete" th:if="${#strings.equals(greatGrandchildComment4.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+                                </form>
+                                <div style="padding-left:135px;" th:each="greatGrandchildComment5 : ${greatGrandchildComment4.replies}" class="reply">
+                                       <ins>
+                                           <span th:if="${greatGrandchildComment5.author != null}" th:text="${greatGrandchildComment5.score} + '| points by '+${greatGrandchildComment5.author.username}"></span>|
+                                           <span class="submission-time" th:text="${greatGrandchildComment5.formattedTime}" th:attr="data-timestamp=${greatGrandchildComment5.getSubmissionTime().getTime()}"></span>
+<!--                                           |<form th:if="${greatGrandchildComment5.author != null and user != null and !user.hasUpvotedComment(greatGrandchildComment5) and !user.hasDownvotedComment(greatGrandchildComment5)}"-->
+<!--                                                 th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment5.id})}" method="post" style="display: inline;">-->
+<!--                                               <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                               <button style="border:0;" type="submit">Upvote</button>-->
+<!--                                           </form>-->
+<!--                                           <form th:if="${greatGrandchildComment5.author != null and user != null and user.hasUpvotedComment(greatGrandchildComment5)}"-->
+<!--                                                 th:action="@{/comments/{id}/downvote(id=${greatGrandchildComment5.id})}" method="post" style="display: inline;">-->
+<!--                                               <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                               <button style="border:0;"  type="submit">Downvote</button>-->
+<!--                                           </form>-->
+<!--                                           <form th:if="${greatGrandchildComment5.author != null and user != null and user.hasDownvotedComment(greatGrandchildComment5)}"-->
+<!--                                                 th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment5.id})}" method="post" style="display: inline;">-->
+<!--                                               <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                               <button style="border:0;"  type="submit">Upvote</button>-->
+<!--                                           </form>-->
+                                       </ins><br><br>
+                                    <small th:text="'-> '+${greatGrandchildComment5.text}"></small><br>
+                                    <a th:href="@{/comments/Comment(storyId=${story?.id}, commentId=${greatGrandchildComment5.id})}" th:text="Reply"></a>
+                                    <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+                                        <input type="hidden" name="commentId" th:value="${greatGrandchildComment5.id}">
+                                        <input type="hidden" name="storyId" th:value="${story.id}">
+                                        <button style="border: 0;" th:text="delete" th:if="${#strings.equals(greatGrandchildComment5.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+                                    </form>
+                                    <div style="padding-left:145px;" th:each="greatGrandchildComment6 : ${greatGrandchildComment5.replies}" class="reply">
+                                            <ins>
+                                                <span th:if="${greatGrandchildComment6.author != null}" th:text="${greatGrandchildComment6.score} + '| points by '+${greatGrandchildComment6.author.username}"></span>|
+                                                <span class="submission-time" th:text="${greatGrandchildComment6.formattedTime}" th:attr="data-timestamp=${greatGrandchildComment6.getSubmissionTime().getTime()}"></span>
+<!--                                                |<form th:if="${greatGrandchildComment6.author != null and user != null and !user.hasUpvotedComment(greatGrandchildComment6) and !user.hasDownvotedComment(greatGrandchildComment6)}"-->
+<!--                                                      th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment6.id})}" method="post" style="display: inline;">-->
+<!--                                                    <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                                    <button style="border:0;" type="submit">Upvote</button>-->
+<!--                                                </form>-->
+<!--                                                <form th:if="${greatGrandchildComment6.author != null and user != null and user.hasUpvotedComment(greatGrandchildComment6)}"-->
+<!--                                                      th:action="@{/comments/{id}/downvote(id=${greatGrandchildComment6.id})}" method="post" style="display: inline;">-->
+<!--                                                    <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                                    <button style="border:0;"  type="submit">Downvote</button>-->
+<!--                                                </form>-->
+<!--                                                <form th:if="${greatGrandchildComment6.author != null and user != null and user.hasDownvotedComment(greatGrandchildComment6)}"-->
+<!--                                                      th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment6.id})}" method="post" style="display: inline;">-->
+<!--                                                    <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                                    <button style="border:0;"  type="submit">Upvote</button>-->
+<!--                                                </form>-->
+                                            </ins><br><br>
+                                        <small th:text="'-> '+${greatGrandchildComment6.text}"></small><br><br>
+                                        <a th:href="@{/comments/Comment(storyId=${story?.id}, commentId=${greatGrandchildComment6.id})}" th:text="Reply"></a>
+                                        <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+                                            <input type="hidden" name="commentId" th:value="${greatGrandchildComment6.id}">
+                                            <input type="hidden" name="storyId" th:value="${story.id}">
+                                            <button style="border: 0;" th:text="delete" th:if="${#strings.equals(greatGrandchildComment6.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+                                        </form>
+                                        <div style="padding-left:155px;" th:each="greatGrandchildComment7 : ${greatGrandchildComment6.replies}" class="reply">
+                                           <ins>
+                                               <span th:if="${greatGrandchildComment7.author != null}" th:text="${greatGrandchildComment7.score} + '| points by '+${greatGrandchildComment7.author.username}"></span>|
+                                               <span class="submission-time" th:text="${greatGrandchildComment7.formattedTime}" th:attr="data-timestamp=${greatGrandchildComment7.getSubmissionTime().getTime()}"></span>
+<!--                                               |<form th:if="${greatGrandchildComment7.author != null and user != null and !user.hasUpvotedComment(greatGrandchildComment7) and !user.hasDownvotedComment(greatGrandchildComment7)}"-->
+<!--                                                     th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment7.id})}" method="post" style="display: inline;">-->
+<!--                                                   <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                                   <button style="border:0;" type="submit">Upvote</button>-->
+<!--                                               </form>-->
+<!--                                               <form th:if="${greatGrandchildComment7.author != null and user != null and user.hasUpvotedComment(greatGrandchildComment7)}"-->
+<!--                                                     th:action="@{/comments/{id}/downvote(id=${greatGrandchildComment7.id})}" method="post" style="display: inline;">-->
+<!--                                                   <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                                   <button style="border:0;"  type="submit">Downvote</button>-->
+<!--                                               </form>-->
+<!--                                               <form th:if="${greatGrandchildComment7.author != null and user != null and user.hasDownvotedComment(greatGrandchildComment7)}"-->
+<!--                                                     th:action="@{/comments/{id}/upvote(id=${greatGrandchildComment7.id})}" method="post" style="display: inline;">-->
+<!--                                                   <input type="hidden" name="storyId" th:value="${story.id}">-->
+<!--                                                   <button style="border:0;"  type="submit">Upvote</button>-->
+<!--                                               </form>-->
+                                           </ins><br><br>
+                                            <small th:text="'-> '+${greatGrandchildComment7.text}"></small><br><br>
+                                            <form th:action="@{/comments/delete}" method="post" class="delete-form" style="display: inline;">
+                                                <input type="hidden" name="commentId" th:value="${greatGrandchildComment7.id}">
+                                                <input type="hidden" name="storyId" th:value="${story.id}">
+                                                <button style="border: 0;" th:text="delete" th:if="${#strings.equals(greatGrandchildComment7.author.username, #authentication.name) or
+        #authorization.expression('hasRole(''ADMIN'')')}"></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

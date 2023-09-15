@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/yc.css}">
+    <meta charset="UTF-8">
+    <title>Hacker News: Welcome</title>
+    <link rel="stylesheet" th:href="@{/css/welcome.css}">
+    <style>
+
+        body {
+            font-family: Verdana;
+            font-size: 8.5pt;
+        }
+
+
+        td {
+            font-family: Verdana;
+            font-size: 8.5pt;
+            line-height: 138%;
+        }
+
+        blockquote {
+            line-height: 122%;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        a:link {
+            color: #222222;
+        }
+
+        a:visited {
+            color: #444444;
+        }
+        b {
+            color: #333333;
+        }
+        .foot {
+            font-size: 7.5pt;
+        }
+        .foot a:link,
+        .foot a:visited {
+            text-decoration: none;
+        }
+        .foot a:hover {
+            text-decoration: underline;
+        }
+        .apply a:link,
+        .apply a:visited {
+            color: #0000ff;
+            font-size: 9pt;
+        }
+        .title {
+            font-size: 10pt;
+        }
+        .title b {
+            color: #000000;
+        }
+        .big {
+            margin-top: 3ex;
+        }
+        .small {
+            margin-top: -1.6ex;
+        }
+
+
+    </style>
+</head>
+<body style="background-color: #ffffff;">
+<div th:fragment="header">
+    <center>
+        <br><br>
+        <table width="500" cellpadding="0">
+            <tr>
+                <td >
+                    <a href="http://www.ycombinator.com">
+                        <img src="data:image/gif;base64,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"
+                             border="0" width="500" alt="Y Combinator Logo">
+                    </a>
+                    <br><br>
+                    <b>Welcome to Hacker News</b>
+                    <br><br>
+                    <p>
+<!--                        <a href="/posts/news">Hacker News</a> is a bit-->
+                        Hacker News is a bit
+                        different from other community sites, and we'd appreciate it if
+                        you'd take a minute to read the following as well as the
+<!--                        <a href="newsguidelines.html">official guidelines</a>.-->
+                        official guidelines
+                    </p>
+                    <p>
+                        HN is an experiment. As a rule, a community site that becomes
+                        popular will decline in quality. Our hypothesis is that this is not
+                        inevitable&mdash;that by making a conscious effort to resist
+                        decline, we can keep it from happening.
+                    </p>
+                    <p>
+                        Essentially there are two rules here: don't post or upvote crap
+                        links, and don't be rude or dumb in comment threads.
+                    </p>
+                    <p>
+                        A crap link is one that's only superficially interesting. Stories on HN don't have to be
+                        about hacking, because good hackers aren't only interested in hacking,
+                        but they do have to be deeply interesting.
+                    </p>
+                    <p>
+                        What does "deeply interesting" mean? It means stuff that teaches you
+                        about the world. A story about a robbery, for example, would
+                        probably not be deeply interesting. But if this robbery was a sign
+                        of some bigger, underlying trend, perhaps it could be.
+                    </p>
+                    <p>
+                        The worst thing to post or upvote is something that's
+                        intensely but shallowly interesting: gossip about famous people,
+                        funny or cute pictures or videos, partisan political articles, etc.
+                        If you let
+                        <a href="http://en.wikipedia.org/wiki/Nile_perch">that</a>
+                        sort of thing onto a news site, it will push
+                        aside the deeply interesting stuff, which tends to be quieter.
+                    </p>
+                    <p>
+                        The most important principle on HN, though, is to make thoughtful
+                        comments. Thoughtful in both senses: civil and substantial.
+                    </p>
+                    <p>
+                        The test for substance is a lot like it is for links. Does your
+                        comment teach us anything? There are two ways to do that: by pointing
+                        out some consideration that hadn't previously been mentioned, and by
+                        giving more information about the topic, perhaps from personal
+                        experience. Whereas comments like "lol" or "That's the dumbest thing
+                        I ever heard" teach us nothing.
+                    </p>
+                    <p>
+                        Empty comments can be ok if they're positive. There's nothing wrong
+                        with submitting a comment saying just "Thanks." What we especially
+                        discourage are comments that are empty and negative&mdash;comments
+                        that are mere name-calling.
+                    </p>
+                    <p>
+                        Which brings us to the most important principle
+                        on HN: civility. Since long before the web, the anonymity of online
+                        conversation has lured people into being much ruder than they'd
+                        be in person. So the principle here is: don't say anything
+                        you wouldn't say face to face. This doesn't mean you can't disagree.
+                        But disagree without calling names.
+                        If you're right, your argument will be more convincing without them.
+                    </p>
+                    <br><br><br>
+                    <table width="100%" bgcolor="#ff6600" cellpadding="0">
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <p align="center">
+                            <span class="foot">
+                                <br><br>
+                            </span>
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </center>
+</div>
+</body>
+</html>
