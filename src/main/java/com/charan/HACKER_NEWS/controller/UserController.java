@@ -1,9 +1,7 @@
 package com.charan.HACKER_NEWS.controller;
 
-import com.charan.HACKER_NEWS.entity.Media;
 import com.charan.HACKER_NEWS.entity.Story;
 import com.charan.HACKER_NEWS.entity.User;
-import com.charan.HACKER_NEWS.services.MediaService;
 import com.charan.HACKER_NEWS.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,13 +25,13 @@ import java.util.Date;
 @RequestMapping("/user")
 public class UserController {
     private UserService userService;
-    private MediaService mediaService;
-
-    @Autowired
-    public UserController(UserService userService, MediaService mediaService) {
-        this.userService = userService;
-        this.mediaService = mediaService;
-    }
+//    private MediaService mediaService;
+//
+//    @Autowired
+//    public UserController(UserService userService, MediaService mediaService) {
+//        this.userService = userService;
+//        this.mediaService = mediaService;
+//    }
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -110,12 +108,12 @@ public class UserController {
         model.addAttribute("successMessage", "Updated sucessfully");
         return "posts/login_form";
     }
-    @GetMapping("/display")
-    public ResponseEntity<byte[]> displayImage(@RequestParam("id") Integer id) throws IOException, SQLException {
-        Media media = mediaService.viewById(id);
-        byte[] mediaBytes = null;
-        mediaBytes = media.getMedia().getBytes(1, (int) media.getMedia().length());
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(mediaBytes);
-    }
+//    @GetMapping("/display")
+//    public ResponseEntity<byte[]> displayImage(@RequestParam("id") Integer id) throws IOException, SQLException {
+//        Media media = mediaService.viewById(id);
+//        byte[] mediaBytes = null;
+//        mediaBytes = media.getMedia().getBytes(1, (int) media.getMedia().length());
+//        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(mediaBytes);
+//    }
 
 }

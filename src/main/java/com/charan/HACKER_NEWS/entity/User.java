@@ -70,9 +70,9 @@ public class User {
     private Timestamp submissionTime;
     @Transient
     private Long formattedTime;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "media_id")
-    private Media media;
+//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "media_id")
+//    private Media media;
 
     public User(){
 
@@ -100,9 +100,9 @@ public class User {
         this.formattedTime = formattedTime;
     }
 
-    public User(Media media) {
-        this.media = media;
-    }
+//    public User(Media media) {
+//        this.media = media;
+//    }
 
     public Long getId() {
         return id;
@@ -272,13 +272,13 @@ public class User {
         this.favoriteStories = favoriteStories;
     }
 
-    public Media getMedia() {
-        return media;
-    }
-
-    public void setMedia(Media media) {
-        this.media = media;
-    }
+//    public Media getMedia() {
+//        return media;
+//    }
+//
+//    public void setMedia(Media media) {
+//        this.media = media;
+//    }
 
     @Override
     public String toString() {

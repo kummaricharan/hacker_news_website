@@ -31,8 +31,7 @@
 
         input[type="text"],
         input[type="email"],
-        input[type="password"],
-        input[type="file"] {
+        input[type="password"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -63,7 +62,6 @@
 <h2>User Registration</h2>
 <form th:action="@{/user/save}" method="post" th:object="${user}">
     <span th:text="${error}" class="already_exist"></span><br>
-
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" th:field="*{username}" required><br>
 
@@ -76,11 +74,11 @@
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" th:field="*{password}" required><br>
 
-    <label for="file">Upload Profile Picture:</label>
-    <input type="file" id="file" name="file" aria-describedby="inputGroupFileAddon04" aria-label="upload" ><br>
+    <label for="profilePictureUrl">Profile Picture URL:</label>
+    <input type="text" id="profilePictureUrl" name="profilePictureUrl" th:field="*{profilePictureUrl}"><br>
 
     <button type="submit">Register</button>
 </form>
-<p style="text-align:center;">Already have an account? <a th:href="@{/user/LoginPage}">Click here to Login</a></p>
+<p style="padding-left:37%;">Already have an account? <a th:href="@{/user/LoginPage}">Click here to Login</a></p>
 </body>
 </html>
