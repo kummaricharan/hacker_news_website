@@ -68,7 +68,6 @@ public class StoryController {
 
         if(!comments.isEmpty()){
             paginationUrl.append("&comments=").append(comments);
-            System.out.println(comments);
         }
 
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
