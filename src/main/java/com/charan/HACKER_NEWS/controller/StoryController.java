@@ -132,7 +132,6 @@ public class StoryController {
         }
         else if(!upvoted_submission.isEmpty()){
             postsPage = storyService.findUpvotedStories(user.getUsername(),pageable);
-            System.out.println(upvoted_submission);
         }
         else if(!favorite.isEmpty()){
             postsPage = storyService.findStoriesByFavorite(user.getUsername(),pageable);
@@ -142,6 +141,7 @@ public class StoryController {
         model.addAttribute("past",past);
         model.addAttribute("comments",comments);
         model.addAttribute("paginationUrl", paginationUrl.toString());
+
         return "posts/stories_home_page";
     }
     @PostMapping("/{id}/upvote")
@@ -388,6 +388,7 @@ public class StoryController {
     public String comments(@RequestParam(name = "page", defaultValue = "0") int page,
                            @RequestParam(name = "size", defaultValue = "15") int size,
                            @RequestParam(name = "comments", defaultValue = "") String comments,
+                           @RequestParam(name = "comment", defaultValue = "") String comment,
                            Model model){
 
         Page<Story> postsPage;
@@ -397,7 +398,12 @@ public class StoryController {
         StringBuilder paginationUrl = new StringBuilder("/posts/comments?")
                 .append("size=").append(size);
 
-        paginationUrl.append("&comments=").append(comments);
+        if(!comments.isEmpty()){
+            paginationUrl.append("&comments=").append(comments);
+        }
+        else {
+            paginationUrl.append("&comment=").append(comment);
+        }
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = null;
@@ -411,7 +417,11 @@ public class StoryController {
             postsPage = storyService.findStoriesByUser(user.getUsername(),pageable);
 
         }
+        else {
+            postsPage = storyService.findAll(pageable);
+        }
         model.addAttribute("comments",comments);
+        model.addAttribute("comment",comment);
         model.addAttribute("stories",postsPage);
         model.addAttribute("paginationUrl",paginationUrl);
         return "posts/only_comments";

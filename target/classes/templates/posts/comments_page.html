@@ -96,7 +96,7 @@
                                         </a>&nbsp;
                                         |
                                         <form th:action="@{/posts/comments}" method="get">
-                                            <input type="hidden" name="comments" value="comments">
+                                            <input type="hidden" name="comment" value="comment">
                                             <button style="background-color:#ff6600;border:0;color:black;" type="submit"  class="btn-style">comments</button>
                                         </form>
                                         |
@@ -157,7 +157,7 @@
         <span>| <a th:href="@{/posts/search(search=${story.title})}" th:value="${story.title}" th:text="past" style="color:black"></a>
             <input type="hidden" name="search" placeholder="Search by title, url, author..." th:value="${story.title}" >|
         <a  style="color:black;" th:href=" @{/comments/favorite(storyId=${story.id})}" th:text="favorite" th:if="${!user.favoriteStories.contains(story)}"></a>
-        <a th:href=" @{/comments/unfavorite(storyId=${story.id})}" th:text="unfavorite" th:if="${user.favoriteStories.contains(story)}"></a></span>
+        <a style="color:black;" th:href=" @{/comments/unfavorite(storyId=${story.id})}" th:text="unfavorite" th:if="${user.favoriteStories.contains(story)}"></a></span>
         |<a th:href="@{/comments/list(storyId=${story.id})}">
             <span th:text="${story.comments.size()} + ' comments'"></span>
         </a>

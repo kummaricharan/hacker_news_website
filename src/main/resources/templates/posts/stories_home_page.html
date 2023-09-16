@@ -113,7 +113,7 @@
                                         </a>&nbsp;
                                         |
                                         <form th:action="@{/posts/comments}" method="get">
-                                            <input type="hidden" name="comments" value="comments">
+                                            <input type="hidden" name="comment" value="comment">
                                             <button style="background-color:#ff6600;border:0;color:black;" type="submit"  class="btn-style">comments</button>
                                         </form>
                                         |
@@ -190,7 +190,7 @@
                                             </span>
                                             <span th:text="${story.score} + ' points by '"></span>|
                                             <span th:if="${story.author != null}" th:text="${story.author.username}"></span>|
-                                            <span class="submission-time" th:text="${story.formattedTime}" th:attr="data-timestamp=${story.formattedTime}"></span>|
+                                            <span class="submission-time" th:text="${story.formattedTime}" th:attr="data-timestamp=${story.getSubmissionTime().getTime()}"></span>|
                                             <form th:if="${story.author != null and user != null and !user.hasUpvoted(story) and !user.hasDownvoted(story)}"
                                                   th:action="@{/posts/{id}/upvote(id=${story.id})}" method="post" style="display: inline;">
                                                 <button  style="border:0;" type="submit">Upvote|</button>

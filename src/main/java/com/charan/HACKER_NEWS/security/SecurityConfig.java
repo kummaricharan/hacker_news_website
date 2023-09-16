@@ -67,7 +67,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests(authorizeRequests ->
                                 authorizeRequests.requestMatchers("/posts/showFormForAdd/**").authenticated()
-                                .requestMatchers("/comments/list").authenticated()
+                                .requestMatchers("/comments/list").authenticated().requestMatchers("/posts/comments").authenticated()
                                         .anyRequest().permitAll()
                 )
                 .formLogin(formLogin ->
