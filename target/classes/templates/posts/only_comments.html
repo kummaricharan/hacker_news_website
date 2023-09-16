@@ -93,9 +93,15 @@
                                             <input type="hidden" name="past" value="past">
                                             <button style="background-color:#ff6600;border:0;" type="submit" class="btn-style">past</button>
                                         </form>
+                                        | &nbsp;
+                                        <a style="color:black;" th:href="@{/posts/comments(comments='comments')}">
+                                            <input type="hidden" name="comments" value="comments">
+                                            <u>threads</u>
+                                        </a>&nbsp;
                                         |
                                         <form th:action="@{/posts/list}" method="get">
-                                            <button style="background-color:#ff6600;border:0;" type="submit"  name="comments" class="btn-style">comments</button>
+                                            <input type="hidden" name="comments" value="comments">
+                                            <button style="background-color:#ff6600;border:0;" type="submit"   class="btn-style">comments</button>
                                         </form>
                                         |
                                         <form th:action="@{/posts/list}" method="get">

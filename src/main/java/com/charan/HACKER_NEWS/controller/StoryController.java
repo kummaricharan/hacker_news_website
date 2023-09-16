@@ -57,6 +57,7 @@ public class StoryController {
                                 @RequestParam(name = "submission",defaultValue = "") String submission,
                                 @RequestParam(name = "upvoted_submission" , defaultValue = "") String upvoted_submission,
                                 @RequestParam(name = "favorite" , defaultValue = "") String favorite,
+                                @RequestParam(name = "comments" , defaultValue = "") String comments,
                                 Model model, HttpSession session) {
 
         Page<Story> postsPage;
@@ -64,6 +65,11 @@ public class StoryController {
 
         StringBuilder paginationUrl = new StringBuilder("/posts/list?")
                 .append("size=").append(size);
+
+        if(!comments.isEmpty()){
+            paginationUrl.append("&comments=").append(comments);
+            System.out.println(comments);
+        }
 
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //        Date date = null;  // Initialize the date variable
@@ -135,6 +141,7 @@ public class StoryController {
         model.addAttribute("stories", postsPage);
 
         model.addAttribute("past",past);
+        model.addAttribute("comments",comments);
         model.addAttribute("paginationUrl", paginationUrl.toString());
         return "posts/stories_home_page";
     }
@@ -387,6 +394,12 @@ public class StoryController {
         Page<Story> postsPage;
         Pageable pageable = PageRequest.of(page, size);
         postsPage = storyService.findAllStories(pageable);
+
+        StringBuilder paginationUrl = new StringBuilder("/posts/comments?")
+                .append("size=").append(size);
+
+        paginationUrl.append("&comments=").append(comments);
+
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = null;
         if (principal instanceof UserDetails) {
@@ -397,10 +410,11 @@ public class StoryController {
         }
         if(!comments.isEmpty()){
             postsPage = storyService.findStoriesByUser(user.getUsername(),pageable);
-            model.addAttribute("comments",comments);
 
         }
+        model.addAttribute("comments",comments);
         model.addAttribute("stories",postsPage);
+        model.addAttribute("paginationUrl",paginationUrl);
         return "posts/only_comments";
     }
     @GetMapping("/profile")
