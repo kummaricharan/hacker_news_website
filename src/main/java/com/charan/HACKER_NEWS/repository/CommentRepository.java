@@ -14,7 +14,7 @@ import java.util.*;
 import java.beans.JavaBean;
 
 public interface CommentRepository extends JpaRepository<Comment,Integer> {
-    @Query("SELECT c FROM Comment c WHERE c.parentStory = :story")
+    @Query("SELECT c FROM Comment c WHERE c.parentStory = :story ORDER BY c.submissionTime")
     List<Comment> findAllByParentStory(Story story);
 
     Comment findById(Long id);
