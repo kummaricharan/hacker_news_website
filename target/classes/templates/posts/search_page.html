@@ -31,15 +31,15 @@
         animation: microphoneWave 1s infinite alternate;
     }
 
-            @keyframes microphoneWave {
-                0% {
-                    transform: scale(1);
-                }
-                100% {
-                transform: scale(1.1);
+        @keyframes microphoneWave {
+            0% {
+                transform: scale(1);
             }
+            100% {
+            transform: scale(1.1);
         }
-                .listening {
+        }
+        .listening {
             color: green;
             animation: microphoneWave 1s infinite alternate;
         }
@@ -60,47 +60,50 @@
                             <label >Search Hacker News</label>
                         </a>
                     </span>
-                    <div style="padding-right:60%;" class="search-container">
-                        <form th:action="@{/posts/search}" method="get">
-                            <input type="text" name="search" id="search-input" placeholder="Search by title, url, author..." th:value="${search}" >
+                    <div  style="padding-right:60%;" class="search-container">
+                        <form th:action="@{/posts/search}"  id="search-form" method="get">
+                            <input type="text" name="search" id="search-input" placeholder="Search by title, url, author..." th:value="${search}">
                             <i id="voice-search-icon" class="fas fa-microphone"></i>
                             <button type="submit">Search</button>
                         </form>
                     </div>
                     <script>
                         if ('webkitSpeechRecognition' in window) {
-                    const recognition = new webkitSpeechRecognition();
+                            const recognition = new webkitSpeechRecognition();
+                            const searchInput = document.getElementById('search-input');
+                            const voiceSearchIcon = document.getElementById('voice-search-icon');
+                            const searchForm = document.getElementById('search-form');
 
-                    const searchInput = document.getElementById('search-input');
-                    const voiceSearchIcon = document.getElementById('voice-search-icon');
+                            voiceSearchIcon.addEventListener('click', () => {
+                                // Start listening for speech
+                                recognition.start();
 
-                    voiceSearchIcon.addEventListener('click', () => {
-                        // Start listening for speech
-                        recognition.start();
+                                // Change the icon color to green while listening
+                                voiceSearchIcon.classList.add('listening');
+                            });
 
-                        // Change the icon color to green while listening
-                        voiceSearchIcon.classList.add('listening');
-                    });
+                            // Handle the speech recognition result
+                            recognition.onresult = (event) => {
+                                const result = event.results[0][0].transcript;
+                                searchInput.value = result;
 
-                    // Handle the speech recognition result
-                    recognition.onresult = (event) => {
-                        const result = event.results[0][0].transcript;
-                        searchInput.value = result;
+                                // Remove the green color when done listening
+                                voiceSearchIcon.classList.remove('listening');
 
-                        // Remove the green color when done listening
-                        voiceSearchIcon.classList.remove('listening');
-                    };
+                                // Submit the form after setting the search input value
+                                searchForm.submit();
+                            };
 
-                    // Handle errors
-                    recognition.onerror = (event) => {
-                        console.error('Speech recognition error:', event.error);
+                            // Handle errors
+                            recognition.onerror = (event) => {
+                                console.error('Speech recognition error:', event.error);
 
-                        // Remove the green color on error
-                        voiceSearchIcon.classList.remove('listening');
-                    };
-                } else {
-                    alert('Speech recognition is not supported in this browser. Please use a modern browser that supports the Web Speech API.');
-                }
+                                // Remove the green color on error
+                                voiceSearchIcon.classList.remove('listening');
+                            };
+                        } else {
+                            alert('Speech recognition is not supported in this browser. Please use a modern browser that supports the Web Speech API.');
+                        }
                     </script>
                 </div>
             </header>
